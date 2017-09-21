@@ -22,8 +22,7 @@ import okhttp3.Response;
  */
 
 public class QueryUtils {
-    private static final String URL =
-            "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String SERVINGS = "servings";

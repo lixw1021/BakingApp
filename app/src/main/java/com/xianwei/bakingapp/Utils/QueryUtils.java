@@ -45,8 +45,8 @@ public class QueryUtils {
 
     private static List<Recipe> parseJson(String jsonResponse) {
         List<Recipe> recipes = new ArrayList<>();
-        List<Ingredient> ingredients = new ArrayList<>();
-        List<Step> steps = new ArrayList<>();
+        List<Ingredient> ingredients = null;
+        List<Step> steps = null;
 
         try {
             JSONArray response = new JSONArray(jsonResponse);
@@ -60,6 +60,7 @@ public class QueryUtils {
 
                 JSONArray ingredientJsonArray;
                 if (item.has(INGREDIENTS)) {
+                    ingredients = new ArrayList<>();
                     ingredientJsonArray = item.getJSONArray(INGREDIENTS);
                     for (int j = 0; j < ingredientJsonArray.length(); j++) {
                         JSONObject ingredientObj = ingredientJsonArray.getJSONObject(j);
@@ -71,7 +72,8 @@ public class QueryUtils {
                 }
 
                 JSONArray stepJsonArray;
-                if (item.has(INGREDIENTS)) {
+                if (item.has(STEPS)) {
+                    steps = new ArrayList<>();
                     stepJsonArray = item.getJSONArray(STEPS);
                     for (int k = 0; k < stepJsonArray.length(); k++) {
                         JSONObject stepObj = stepJsonArray.getJSONObject(k);

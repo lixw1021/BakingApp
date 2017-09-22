@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.xianwei.bakingapp.DetailActivity;
 import com.xianwei.bakingapp.R;
 import com.xianwei.bakingapp.model.Recipe;
 
@@ -22,6 +23,7 @@ import butterknife.ButterKnife;
  */
 
 public class RecipeAdapter extends RecyclerView.Adapter <RecipeAdapter.ViewHolder> {
+    private static final String RECIPE = "recipe";
     private Context context;
     private List<Recipe> recipes;
 
@@ -40,10 +42,9 @@ public class RecipeAdapter extends RecyclerView.Adapter <RecipeAdapter.ViewHolde
     @Override
     public void onBindViewHolder(RecipeAdapter.ViewHolder holder, int position) {
         Recipe currentRecipe = recipes.get(position);
-        Log.i("1234", currentRecipe.getName());
-        Log.i("1234", currentRecipe.getServingNum());
         holder.name.setText(currentRecipe.getName());
         holder.servingNum.setText(currentRecipe.getServingNum());
+        holder.recipe = currentRecipe;
     }
 
     @Override
@@ -57,17 +58,19 @@ public class RecipeAdapter extends RecyclerView.Adapter <RecipeAdapter.ViewHolde
         TextView name;
         @BindView(R.id.tv_servings_number)
         TextView servingNum;
+        Recipe recipe;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context,);
-//                    intent.putExtra()
-//                }
-//            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(RECIPE, recipe);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 

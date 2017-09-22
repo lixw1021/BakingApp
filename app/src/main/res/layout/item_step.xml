@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/line_thickness"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorAccent"
+    android:paddingBottom="@dimen/margin_vertical"
+    android:paddingEnd="@dimen/margin_horizontal"
+    android:paddingStart="@dimen/margin_horizontal"
+    android:paddingTop="@dimen/margin_vertical">
+
+    <TextView
+        android:id="@+id/step_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Step:"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_step_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal"
+        android:layout_toEndOf="@+id/step_text"
+        android:textSize="20sp"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/tv_step_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/margin_horizontal"
+        android:layout_toEndOf="@+id/tv_step_id"
+        android:layout_toStartOf="@+id/iv_step_video"
+        tools:text="Recipe Introduction" />
+
+    <ImageView
+        android:id="@+id/iv_step_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_video" />
+
+</RelativeLayout>

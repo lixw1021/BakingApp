@@ -1,6 +1,7 @@
 package com.xianwei.bakingapp;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +31,6 @@ public class InstructionFragment extends Fragment {
     @BindView(R.id.rv_steps)
     RecyclerView stepsRv;
 
-    private static final String RECIPE = "recipe";
     private Recipe recipe;
 
     @Override
@@ -52,7 +52,7 @@ public class InstructionFragment extends Fragment {
     }
 
     private void setupStep(List<Step> steps) {
-        StepAdapter adapter = new StepAdapter(steps);
+        StepAdapter adapter = new StepAdapter(new DetailActivity(), steps);
         stepsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         stepsRv.setAdapter(adapter);
     }

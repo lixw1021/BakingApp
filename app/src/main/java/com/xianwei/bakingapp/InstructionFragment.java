@@ -31,17 +31,17 @@ public class InstructionFragment extends Fragment {
     RecyclerView stepsRv;
 
     private static final String RECIPE = "recipe";
+    private Recipe recipe;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_instruction, container, false);
         ButterKnife.bind(this, rootView);
 
-        Recipe recipe = getArguments().getParcelable(RECIPE);
-        
-        setupIngredient(recipe.getIngredients());
-        setupStep(recipe.getSteps());
-
+        if (recipe != null) {
+            setupIngredient(recipe.getIngredients());
+            setupStep(recipe.getSteps());
+        }
         return rootView;
     }
 
@@ -55,5 +55,9 @@ public class InstructionFragment extends Fragment {
         StepAdapter adapter = new StepAdapter(steps);
         stepsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         stepsRv.setAdapter(adapter);
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 }

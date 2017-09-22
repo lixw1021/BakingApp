@@ -22,18 +22,12 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.containsKey(RECIPE)) {
-            recipe = bundle.getParcelable(RECIPE);
+        recipe = getIntent().getExtras().getParcelable(RECIPE);
 
-            InstructionFragment instructionFragment = new InstructionFragment();
-            instructionFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.instruction_container, instructionFragment)
-                    .commit();
-        }
-
-
-
+        InstructionFragment instructionFragment = new InstructionFragment();
+        instructionFragment.setRecipe(recipe);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.instruction_container, instructionFragment)
+                .commit();
     }
 }

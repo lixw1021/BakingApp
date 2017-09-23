@@ -1,5 +1,6 @@
 package com.xianwei.bakingapp;
 
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -38,50 +40,56 @@ public class VideoFragment extends Fragment {
     @BindView(R.id.tv_video_description)
     TextView videoDescription;
 
+    private static final String POSITION = "position";
+    private static final String DESCRIPTION = "description";
+    private static final String VIDEO_URI = "videoUri";
+
     private String videoUriString;
     private String description;
     SimpleExoPlayer player;
+    long currentPosition = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
         ButterKnife.bind(this, rootView);
-        Log.i("1234","VideoFragment created");
-        
-        if (videoUriString != null) {
-            setupExoPlayer(Uri.parse(videoUriString));
-        }
-        if (description != null) {
-            videoDescription.setText(description);
+
+        if (savedInstanceState != null) {
+            videoUriString = savedInstanceState.getString(VIDEO_URI);
+            description = savedInstanceState.getString(DESCRIPTION);
+            currentPosition = savedInstanceState.getLong(POSITION);
         }
 
+        setupExoPlayer(Uri.parse(videoUriString));
+        videoDescription.setText(description);
         return rootView;
     }
 
     private void setupExoPlayer(Uri videoUrlString) {
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
-        player =
-                ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
+        player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
         playerView.setPlayer(player);
 
-        // Measures bandwidth during playback. Can be null if not required.
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        // Produces DataSource instances through which media data is loaded.
         DataSource.Factory dataSourceFactory =
                 new DefaultDataSourceFactory(getContext(),
                         Util.getUserAgent(getContext(),
                                 "BakingApp"), bandwidthMeter);
-        // Produces Extractor instances for parsing the media data.
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        // This is the MediaSource representing the media to be played.
         MediaSource videoSource = new ExtractorMediaSource(videoUrlString,
                 dataSourceFactory,
                 extractorsFactory,
                 null,
                 null);
-        // Prepare the player with the source.
         player.prepare(videoSource);
+        player.seekTo(currentPosition);
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+        }
     }
 
     public void setVideoUriString(String videoUriString) {
@@ -90,6 +98,15 @@ public class VideoFragment extends Fragment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        currentPosition = player.getCurrentPosition();
+        outState.putLong(POSITION, currentPosition);
+        outState.putString(VIDEO_URI, videoUriString);
+        outState.putString(DESCRIPTION, description);
     }
 
     @Override

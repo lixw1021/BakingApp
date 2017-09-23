@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity
         recipesRecyclerView.setAdapter(mRecipeAdapter);
         recipesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
     }
 
     @Override
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
-        Log.i("1234", "onLoadFinished" + data.size());
+        Log.i("1234", "onLoadFinished");
         mRecipeAdapter.setRecipes(data);
     }
 

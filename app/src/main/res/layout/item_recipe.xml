@@ -62,12 +62,11 @@
         tools:layout_editor_absoluteX="324dp" />
 
     <TextView
-        android:layout_width="358dp"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/iv_cooking_tools"
-        app:layout_constraintStart_toStartOf="@+id/iv_recipe_cover"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintStart_toStartOf="@+id/iv_recipe_cover" />
 
 </android.support.constraint.ConstraintLayout>

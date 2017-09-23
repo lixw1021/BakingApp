@@ -44,6 +44,8 @@ public class QueryUtils {
     }
 
     private static List<Recipe> parseJson(String jsonResponse) {
+
+        if (jsonResponse == null) return null;
         List<Recipe> recipes = new ArrayList<>();
         List<Ingredient> ingredients = null;
         List<Step> steps = null;

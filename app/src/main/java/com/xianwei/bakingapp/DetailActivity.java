@@ -1,5 +1,6 @@
 package com.xianwei.bakingapp;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -15,19 +16,36 @@ public class DetailActivity extends AppCompatActivity {
 
     private static final String RECIPE = "recipe";
     private Recipe recipe;
+    Fragment fragment;
+    InstructionFragment instructionFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        if (savedInstanceState == null) {
+            recipe = getIntent().getExtras().getParcelable(RECIPE);
 
-        recipe = getIntent().getExtras().getParcelable(RECIPE);
+            instructionFragment = new InstructionFragment();
+            instructionFragment.setRecipe(recipe);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.instruction_container, instructionFragment)
+                    .commit();
+        } else {
+            fragment =  getSupportFragmentManager()
+                    .getFragment(savedInstanceState , "savedFragment");
 
-        InstructionFragment instructionFragment = new InstructionFragment();
-        instructionFragment.setRecipe(recipe);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.instruction_container, instructionFragment)
-                .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.instruction_container, fragment)
+                    .commit();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        fragment = getSupportFragmentManager().findFragmentById(R.id.instruction_container);
+        getSupportFragmentManager().putFragment(outState, "savedFragment", fragment );
     }
 }

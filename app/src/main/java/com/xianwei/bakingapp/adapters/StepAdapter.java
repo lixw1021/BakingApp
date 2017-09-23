@@ -1,5 +1,6 @@
 package com.xianwei.bakingapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -29,10 +30,8 @@ import butterknife.ButterKnife;
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     private List<Step> steps;
-    DetailActivity detailActivity;
 
-    public StepAdapter(DetailActivity detailActivity, List<Step> steps) {
-        this.detailActivity = detailActivity;
+    public StepAdapter(List<Step> steps) {
         this.steps = steps;
     }
 
@@ -85,10 +84,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                     fragment.setVideoUriString(videoUrl);
                     fragment.setDescription(description);
 
-                    detailActivity
+                    ((DetailActivity)itemView.getContext())
                             .getSupportFragmentManager()
                             .beginTransaction()
-                            .add(R.id.video_fragment_container, fragment)
+                            .replace(R.id.instruction_container, fragment)
                             .commit();
                 }
             });

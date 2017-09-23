@@ -45,6 +45,16 @@ public class InstructionFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            recipe = savedInstanceState.getParcelable("recipe");
+            setupIngredient(recipe.getIngredients());
+            setupStep(recipe.getSteps());
+        }
+    }
+
     private void setupIngredient(List<Ingredient> ingredients) {
         IngredientAdapter adapter = new IngredientAdapter(ingredients);
         ingredientsRv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -52,12 +62,18 @@ public class InstructionFragment extends Fragment {
     }
 
     private void setupStep(List<Step> steps) {
-        StepAdapter adapter = new StepAdapter(new DetailActivity(), steps);
+        StepAdapter adapter = new StepAdapter(steps);
         stepsRv.setLayoutManager(new LinearLayoutManager(getContext()));
         stepsRv.setAdapter(adapter);
     }
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("recipe", recipe);
     }
 }

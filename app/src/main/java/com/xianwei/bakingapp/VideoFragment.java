@@ -3,9 +3,11 @@ package com.xianwei.bakingapp;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -33,17 +35,24 @@ import butterknife.ButterKnife;
 public class VideoFragment extends Fragment {
     @BindView(R.id.player_view)
     SimpleExoPlayerView playerView;
+    @BindView(R.id.tv_video_description)
+    TextView videoDescription;
 
     private String videoUriString;
     private String description;
+    SimpleExoPlayer player;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
         ButterKnife.bind(this, rootView);
+        Log.i("1234","VideoFragment created");
         
         if (videoUriString != null) {
             setupExoPlayer(Uri.parse(videoUriString));
+        }
+        if (description != null) {
+            videoDescription.setText(description);
         }
 
         return rootView;
@@ -52,7 +61,7 @@ public class VideoFragment extends Fragment {
     private void setupExoPlayer(Uri videoUrlString) {
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
-        SimpleExoPlayer player =
+        player =
                 ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
         playerView.setPlayer(player);
 
@@ -81,5 +90,11 @@ public class VideoFragment extends Fragment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        player.release();
     }
 }

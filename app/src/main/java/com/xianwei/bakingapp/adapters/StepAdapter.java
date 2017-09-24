@@ -88,6 +88,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                             .getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.instruction_container, fragment)
+                            .addToBackStack(null)
                             .commit();
                 }
             });

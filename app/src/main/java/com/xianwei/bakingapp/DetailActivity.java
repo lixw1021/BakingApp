@@ -3,6 +3,7 @@ package com.xianwei.bakingapp;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.xianwei.bakingapp.model.Recipe;
@@ -47,5 +48,15 @@ public class DetailActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         fragment = getSupportFragmentManager().findFragmentById(R.id.instruction_container);
         getSupportFragmentManager().putFragment(outState, "savedFragment", fragment );
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.i("1234", "detailed onbackpressed");
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 }

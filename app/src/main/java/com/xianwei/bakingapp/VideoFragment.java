@@ -4,11 +4,9 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -54,6 +52,7 @@ public class VideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
         ButterKnife.bind(this, rootView);
+        ((DetailActivity) getActivity()).getSupportActionBar().hide();
 
         if (savedInstanceState != null) {
             videoUriString = savedInstanceState.getString(VIDEO_URI);
@@ -111,9 +110,11 @@ public class VideoFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        currentPosition = player.getCurrentPosition();
-        outState.putLong(POSITION, currentPosition);
-        outState.putString(VIDEO_URI, videoUriString);
+        if (videoUriString != null && videoUriString.length() != 0) {
+            currentPosition = player.getCurrentPosition();
+            outState.putLong(POSITION, currentPosition);
+            outState.putString(VIDEO_URI, videoUriString);
+        }
         outState.putString(DESCRIPTION, description);
     }
 

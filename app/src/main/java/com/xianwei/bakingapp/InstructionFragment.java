@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.xianwei.bakingapp.adapters.IngredientAdapter;
 import com.xianwei.bakingapp.adapters.StepAdapter;
@@ -37,6 +36,7 @@ public class InstructionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_instruction, container, false);
         ButterKnife.bind(this, rootView);
+        ((DetailActivity) getActivity()).getSupportActionBar().show();
 
         if (recipe != null) {
             setupIngredient(recipe.getIngredients());

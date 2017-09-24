@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppThemeNoActionBar">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop">
@@ -24,8 +24,7 @@
             android:parentActivityName=".MainActivity"
             android:name=".DetailActivity"
             android:label="Recipe"
-            android:launchMode="singleTop"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

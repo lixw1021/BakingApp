@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -60,12 +61,19 @@ public class VideoFragment extends Fragment {
             currentPosition = savedInstanceState.getLong(POSITION);
         }
 
-        setupExoPlayer(Uri.parse(videoUriString));
+        if (videoUriString != null && videoUriString.length() != 0) {
+            playerView.setVisibility(View.VISIBLE);
+            setupExoPlayer(Uri.parse(videoUriString));
+        } else {
+            playerView.setVisibility(View.GONE);
+        }
+
         videoDescription.setText(description);
         return rootView;
     }
 
     private void setupExoPlayer(Uri videoUrlString) {
+        if (videoUrlString == null) return;
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
         player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
@@ -112,6 +120,8 @@ public class VideoFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        player.release();
+        if (player != null) {
+            player.release();
+        }
     }
 }

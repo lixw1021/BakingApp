@@ -24,7 +24,8 @@
             android:parentActivityName=".MainActivity"
             android:name=".DetailActivity"
             android:label="Recipe"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:theme="@style/AppThemeNoActionBar"/>
     </application>
 
 </manifest>

@@ -62,6 +62,10 @@ public class Step implements Parcelable {
         this.thumbnailURL = thumbnailURL;
     }
 
+    public Boolean hasVideo() {
+        return videoURL != null && videoURL.length() > 0;
+    }
+
     @Override
     public int describeContents() {
         return 0;

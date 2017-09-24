@@ -7,7 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -25,9 +28,14 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.xianwei.bakingapp.model.Step;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by xianwei li on 9/22/2017.
@@ -38,36 +46,43 @@ public class VideoFragment extends Fragment {
     SimpleExoPlayerView playerView;
     @BindView(R.id.tv_video_description)
     TextView videoDescription;
+    @BindView(R.id.btn_step_next)
+    ImageButton nextStep;
+    @BindView(R.id.btn_step_previous)
+    ImageButton previousStep;
+    @BindView(R.id.step_btn_layout)
+    LinearLayout buttonLayout;
 
-    private static final String POSITION = "position";
-    private static final String DESCRIPTION = "description";
-    private static final String VIDEO_URI = "videoUri";
+    private static final String VIDEO_POSITION = "videoPosition";
 
-    private String videoUriString;
-    private String description;
     SimpleExoPlayer player;
     long currentPosition = 0;
+    private ArrayList<Step> steps;
+    private Step step;
+    private int stepPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
         ButterKnife.bind(this, rootView);
-        ((DetailActivity) getActivity()).getSupportActionBar().hide();
 
         if (savedInstanceState != null) {
-            videoUriString = savedInstanceState.getString(VIDEO_URI);
-            description = savedInstanceState.getString(DESCRIPTION);
-            currentPosition = savedInstanceState.getLong(POSITION);
+            steps = savedInstanceState.getParcelableArrayList("steps");
+            stepPosition = savedInstanceState.getInt("position");
+            step = steps.get(stepPosition);
+            currentPosition = savedInstanceState.getLong(VIDEO_POSITION);
+        } else {
+            step = steps.get(stepPosition);
         }
 
-        if (videoUriString != null && videoUriString.length() != 0) {
+        if (step.hasVideo()) {
             playerView.setVisibility(View.VISIBLE);
-            setupExoPlayer(Uri.parse(videoUriString));
+            setupExoPlayer(Uri.parse(step.getVideoURL()));
         } else {
             playerView.setVisibility(View.GONE);
         }
 
-        videoDescription.setText(description);
+        videoDescription.setText(step.getDescription());
         return rootView;
     }
 
@@ -95,27 +110,30 @@ public class VideoFragment extends Fragment {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            buttonLayout.setVisibility(View.GONE);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            ((DetailActivity)getActivity()).getSupportActionBar().hide();
+
         }
     }
 
-    public void setVideoUriString(String videoUriString) {
-        this.videoUriString = videoUriString;
+    public void setSteps(List<Step> steps) {
+        this.steps = (ArrayList<Step>) steps;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStepPosition(int stepPosition) {
+        this.stepPosition = stepPosition;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (videoUriString != null && videoUriString.length() != 0) {
+        if (step.hasVideo()) {
             currentPosition = player.getCurrentPosition();
-            outState.putLong(POSITION, currentPosition);
-            outState.putString(VIDEO_URI, videoUriString);
+            outState.putLong(VIDEO_POSITION, currentPosition);
         }
-        outState.putString(DESCRIPTION, description);
+        outState.putParcelableArrayList("steps", steps);
+        outState.putInt("position", stepPosition);
     }
 
     @Override
@@ -123,6 +141,42 @@ public class VideoFragment extends Fragment {
         super.onPause();
         if (player != null) {
             player.release();
+        }
+    }
+
+    @OnClick(R.id.btn_step_previous)
+    void previousStep() {
+        if (stepPosition > 0) {
+            VideoFragment fragment = new VideoFragment();
+            fragment.setSteps(steps);
+            fragment.setStepPosition(--stepPosition);
+
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.instruction_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            Toast.makeText(getContext(), "this is the first step", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @OnClick(R.id.btn_step_next)
+    void nextStep() {
+        if (stepPosition < steps.size() - 1) {
+            VideoFragment fragment = new VideoFragment();
+            fragment.setSteps(steps);
+            fragment.setStepPosition(++stepPosition);
+
+            getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.instruction_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            Toast.makeText(getContext(), "this is the last step", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -48,13 +48,14 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         Step currentStep = steps.get(position);
         holder.stepIdTv.setText(currentStep.getStepId());
         holder.stepDescription.setText(currentStep.getShortDescription());
-        holder.description = currentStep.getDescription();
-        holder.videoUrl = currentStep.getVideoURL();
-        if (holder.videoUrl == null || holder.videoUrl.length() == 0) {
-            holder.stepVideoImage.setVisibility(View.INVISIBLE);
-        } else {
-            holder.stepVideoImage.setVisibility(View.VISIBLE);
-        }
+        holder.stepPosition = position;
+//        holder.description = currentStep.getDescription();
+//        holder.videoUrl = currentStep.getVideoURL();
+//        if (holder.videoUrl == null || holder.videoUrl.length() == 0) {
+//            holder.stepVideoImage.setVisibility(View.INVISIBLE);
+//        } else {
+//            holder.stepVideoImage.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -72,6 +73,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         ImageView stepVideoImage;
         String videoUrl;
         String description;
+        int stepPosition;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -81,8 +83,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     VideoFragment fragment = new VideoFragment();
-                    fragment.setVideoUriString(videoUrl);
-                    fragment.setDescription(description);
+//                    fragment.setVideoUriString(videoUrl);
+//                    fragment.setDescription(description);
+                    fragment.setSteps(steps);
+                    fragment.setStepPosition(stepPosition);
 
                     ((DetailActivity)itemView.getContext())
                             .getSupportFragmentManager()

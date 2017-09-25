@@ -75,12 +75,21 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                     fragment.setSteps(steps);
                     fragment.setStepId(stepId);
 
-                    ((DetailActivity) itemView.getContext())
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.instruction_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
+                    // check two pane, if yes, replace new fragment and don't put into backStack
+                    if (DetailActivity.twoPane) {
+                        ((DetailActivity) itemView.getContext())
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.video_container, fragment)
+                                .commit();
+                    } else {
+                        ((DetailActivity) itemView.getContext())
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.instruction_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                 }
             });
         }

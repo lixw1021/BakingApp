@@ -20,9 +20,9 @@ public class DetailActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     private static final String RECIPE = "recipe";
-    private Recipe recipe;
-    Fragment fragment;
-    InstructionFragment instructionFragment;
+    private static final int INITIALIZED_STEP_ID = 0;
+
+    public static boolean twoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +33,40 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpButton();
 
-        if (savedInstanceState == null) {
-            recipe = getIntent().getExtras().getParcelable(RECIPE);
+        Recipe recipe;
+        InstructionFragment instructionFragment;
+        if (findViewById(R.id.video_container) != null) {
+            twoPane = true;
+            if (savedInstanceState == null) {
+                recipe = getIntent().getExtras().getParcelable(RECIPE);
 
-            instructionFragment = new InstructionFragment();
-            instructionFragment.setRecipe(recipe);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.instruction_container, instructionFragment)
-                    .commit();
+                instructionFragment = new InstructionFragment();
+                VideoFragment videoFragment = new VideoFragment();
+
+                instructionFragment.setRecipe(recipe);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.instruction_container, instructionFragment)
+                        .commit();
+
+                videoFragment.setSteps(recipe.getSteps());
+                videoFragment.setStepId(INITIALIZED_STEP_ID);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.video_container, videoFragment)
+                        .commit();
+            }
         } else {
-            fragment = getSupportFragmentManager()
-                    .getFragment(savedInstanceState, "savedFragment");
+            twoPane = false;
+            if (savedInstanceState == null) {
+                recipe = getIntent().getExtras().getParcelable(RECIPE);
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.instruction_container, fragment)
-                    .commit();
+                instructionFragment = new InstructionFragment();
+                instructionFragment.setRecipe(recipe);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.instruction_container, instructionFragment)
+                        .commit();
+            }
         }
     }
 
@@ -57,19 +76,12 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FragmentManager manager = getSupportFragmentManager();
                 if (manager.getBackStackEntryCount() > 0) {
-                    manager.popBackStack(null, manager.POP_BACK_STACK_INCLUSIVE);
+                    manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
                     finish();
                 }
             }
         });
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        fragment = getSupportFragmentManager().findFragmentById(R.id.instruction_container);
-        getSupportFragmentManager().putFragment(outState, "savedFragment", fragment);
     }
 
     @Override

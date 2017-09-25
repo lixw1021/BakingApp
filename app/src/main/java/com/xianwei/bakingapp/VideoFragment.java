@@ -68,6 +68,11 @@ public class VideoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_video_player, container, false);
         ButterKnife.bind(this, rootView);
 
+        // if tablet, hind two step-buttons
+        if (DetailActivity.twoPane) {
+            buttonLayout.setVisibility(View.GONE);
+        }
+
         if (savedInstanceState != null) {
             steps = savedInstanceState.getParcelableArrayList(SAVED_STEPS);
             stepId = savedInstanceState.getInt(SAVED_STEP_ID);
@@ -111,8 +116,10 @@ public class VideoFragment extends Fragment {
             player.seekTo(videoPosition);
             player.setPlayWhenReady(true);
         }
-
-        setupPlayerView (getResources().getConfiguration().orientation);
+        //if tablet, don't make full screen video
+        if (!DetailActivity.twoPane) {
+            setupPlayerView(getResources().getConfiguration().orientation);
+        }
     }
 
     // make full screen when phone rotate to landscape
@@ -122,7 +129,7 @@ public class VideoFragment extends Fragment {
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             buttonLayout.setVisibility(View.GONE);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-            ((DetailActivity)getActivity()).getSupportActionBar().hide();
+            ((DetailActivity) getActivity()).getSupportActionBar().hide();
         }
     }
 

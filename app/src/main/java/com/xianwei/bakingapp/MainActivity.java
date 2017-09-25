@@ -1,9 +1,11 @@
 package com.xianwei.bakingapp;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.rv_recipe)
     RecyclerView recipesRecyclerView;
 
+    private static final int GRID_LAYOUT_ITEM_NUM = 2;
+
     private RecipeAdapter mRecipeAdapter;
 
     @Override
@@ -37,7 +41,11 @@ public class MainActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(0, null, this);
         mRecipeAdapter = new RecipeAdapter(this);
         recipesRecyclerView.setAdapter(mRecipeAdapter);
-        recipesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            recipesRecyclerView.setLayoutManager(new GridLayoutManager(this, GRID_LAYOUT_ITEM_NUM));
+        } else {
+            recipesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
     }
 
     @Override

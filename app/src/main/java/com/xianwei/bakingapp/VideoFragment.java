@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,10 +167,10 @@ public class VideoFragment extends Fragment {
             VideoFragment fragment = new VideoFragment();
             fragment.setSteps(steps);
             fragment.setStepId(--stepId);
-
-            getActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
+            // make sure only save one videoFragment in backStack
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            manager.popBackStack();
+            manager.beginTransaction()
                     .replace(R.id.instruction_container, fragment)
                     .addToBackStack(null)
                     .commit();
@@ -184,10 +185,10 @@ public class VideoFragment extends Fragment {
             VideoFragment fragment = new VideoFragment();
             fragment.setSteps(steps);
             fragment.setStepId(++stepId);
-
-            getActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
+            // make sure only save one videoFragment in backStack
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            manager.popBackStack();
+            manager.beginTransaction()
                     .replace(R.id.instruction_container, fragment)
                     .addToBackStack(null)
                     .commit();

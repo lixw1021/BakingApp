@@ -64,6 +64,7 @@ public class DetailActivity extends AppCompatActivity {
                 instructionFragment.setRecipe(recipe);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.instruction_container, instructionFragment)
+                        .addToBackStack(null)
                         .commit();
             }
         }
@@ -74,19 +75,19 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getSupportFragmentManager();
-                if (manager.getBackStackEntryCount() > 0) {
-                    manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                if (manager.getBackStackEntryCount() > 1) {
+                    manager.popBackStack();
                 } else {
                     finish();
                 }
             }
         });
     }
-    // back to previous fragment when more than one video fragment inflated
+    //back to instructionFragment when videoFragmented inflated
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1 || twoPane) {
+            finish();
         } else {
             getSupportFragmentManager().popBackStack();
         }

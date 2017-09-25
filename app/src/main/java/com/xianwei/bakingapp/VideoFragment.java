@@ -54,12 +54,14 @@ public class VideoFragment extends Fragment {
     LinearLayout buttonLayout;
 
     private static final String VIDEO_POSITION = "videoPosition";
+    private static final String SAVED_STEPS = "steps";
+    private static final String SAVED_STEP_ID = "stepId";
 
     SimpleExoPlayer player;
-    long currentPosition = 0;
+    long videoPosition = 0;
     private ArrayList<Step> steps;
     private Step step;
-    private int stepPosition;
+    private int stepId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,12 +69,12 @@ public class VideoFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         if (savedInstanceState != null) {
-            steps = savedInstanceState.getParcelableArrayList("steps");
-            stepPosition = savedInstanceState.getInt("position");
-            step = steps.get(stepPosition);
-            currentPosition = savedInstanceState.getLong(VIDEO_POSITION);
+            steps = savedInstanceState.getParcelableArrayList(SAVED_STEPS);
+            stepId = savedInstanceState.getInt(SAVED_STEP_ID);
+            step = steps.get(stepId);
+            videoPosition = savedInstanceState.getLong(VIDEO_POSITION);
         } else {
-            step = steps.get(stepPosition);
+            step = steps.get(stepId);
         }
 
         if (step.hasVideo()) {
@@ -105,15 +107,22 @@ public class VideoFragment extends Fragment {
                 null,
                 null);
         player.prepare(videoSource);
-        player.seekTo(currentPosition);
-        int orientation = getResources().getConfiguration().orientation;
+        if (videoPosition > 0) {
+            player.seekTo(videoPosition);
+            player.setPlayWhenReady(true);
+        }
+
+        setupPlayerView (getResources().getConfiguration().orientation);
+    }
+
+    // make full screen when phone rotate to landscape
+    private void setupPlayerView(int orientation) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             buttonLayout.setVisibility(View.GONE);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             ((DetailActivity)getActivity()).getSupportActionBar().hide();
-
         }
     }
 
@@ -121,19 +130,19 @@ public class VideoFragment extends Fragment {
         this.steps = (ArrayList<Step>) steps;
     }
 
-    public void setStepPosition(int stepPosition) {
-        this.stepPosition = stepPosition;
+    public void setStepId(int stepId) {
+        this.stepId = stepId;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (step.hasVideo()) {
-            currentPosition = player.getCurrentPosition();
-            outState.putLong(VIDEO_POSITION, currentPosition);
+            videoPosition = player.getCurrentPosition();
+            outState.putLong(VIDEO_POSITION, videoPosition);
         }
-        outState.putParcelableArrayList("steps", steps);
-        outState.putInt("position", stepPosition);
+        outState.putParcelableArrayList(SAVED_STEPS, steps);
+        outState.putInt(SAVED_STEP_ID, stepId);
     }
 
     @Override
@@ -146,10 +155,10 @@ public class VideoFragment extends Fragment {
 
     @OnClick(R.id.btn_step_previous)
     void previousStep() {
-        if (stepPosition > 0) {
+        if (stepId > 0) {
             VideoFragment fragment = new VideoFragment();
             fragment.setSteps(steps);
-            fragment.setStepPosition(--stepPosition);
+            fragment.setStepId(--stepId);
 
             getActivity()
                     .getSupportFragmentManager()
@@ -158,16 +167,16 @@ public class VideoFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         } else {
-            Toast.makeText(getContext(), "this is the first step", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.first_step_toasst, Toast.LENGTH_LONG).show();
         }
     }
 
     @OnClick(R.id.btn_step_next)
     void nextStep() {
-        if (stepPosition < steps.size() - 1) {
+        if (stepId < steps.size() - 1) {
             VideoFragment fragment = new VideoFragment();
             fragment.setSteps(steps);
-            fragment.setStepPosition(++stepPosition);
+            fragment.setStepId(++stepId);
 
             getActivity()
                     .getSupportFragmentManager()
@@ -176,7 +185,7 @@ public class VideoFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         } else {
-            Toast.makeText(getContext(), "this is the last step", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.last_step_toast, Toast.LENGTH_LONG).show();
         }
     }
 }

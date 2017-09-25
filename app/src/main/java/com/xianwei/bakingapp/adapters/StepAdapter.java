@@ -1,11 +1,6 @@
 package com.xianwei.bakingapp.adapters;
 
-import android.app.Activity;
-import android.content.Context;
-import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xianwei.bakingapp.DetailActivity;
-import com.xianwei.bakingapp.InstructionFragment;
-import com.xianwei.bakingapp.MainActivity;
 import com.xianwei.bakingapp.R;
 import com.xianwei.bakingapp.VideoFragment;
 import com.xianwei.bakingapp.model.Step;
@@ -48,14 +41,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         Step currentStep = steps.get(position);
         holder.stepIdTv.setText(currentStep.getStepId());
         holder.stepDescription.setText(currentStep.getShortDescription());
-        holder.stepPosition = position;
-//        holder.description = currentStep.getDescription();
-//        holder.videoUrl = currentStep.getVideoURL();
-//        if (holder.videoUrl == null || holder.videoUrl.length() == 0) {
-//            holder.stepVideoImage.setVisibility(View.INVISIBLE);
-//        } else {
-//            holder.stepVideoImage.setVisibility(View.VISIBLE);
-//        }
+        holder.stepId = position;
+        if (currentStep.hasVideo()) {
+            holder.stepVideoImage.setVisibility(View.VISIBLE);
+        } else {
+            holder.stepVideoImage.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -71,9 +62,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         TextView stepDescription;
         @BindView(R.id.iv_step_video)
         ImageView stepVideoImage;
-        String videoUrl;
-        String description;
-        int stepPosition;
+        int stepId;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -83,12 +72,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     VideoFragment fragment = new VideoFragment();
-//                    fragment.setVideoUriString(videoUrl);
-//                    fragment.setDescription(description);
                     fragment.setSteps(steps);
-                    fragment.setStepPosition(stepPosition);
+                    fragment.setStepId(stepId);
 
-                    ((DetailActivity)itemView.getContext())
+                    ((DetailActivity) itemView.getContext())
                             .getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.instruction_container, fragment)

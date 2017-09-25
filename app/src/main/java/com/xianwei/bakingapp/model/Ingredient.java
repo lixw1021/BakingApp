@@ -30,18 +30,6 @@ public class Ingredient implements Parcelable {
         return ingredient;
     }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setMeasure(String measure) {
-        this.measure = measure;
-    }
-
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
-    }
-
     @Override
     public int describeContents() {
         return 0;

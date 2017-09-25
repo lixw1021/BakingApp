@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll_view"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,27 +13,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vertical"
-            android:text="Ingredients :" />
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/ingredients"
+            android:textSize="@dimen/secondary_title_size" />
 
         <android.support.v7.widget.RecyclerView
-            android:layout_below="@+id/tv_ingredients_text"
             android:id="@+id/re_ingredients"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ingredients_text" />
 
         <TextView
-            android:layout_below="@+id/re_ingredients"
             android:id="@+id/tv_steps_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/re_ingredients"
             android:layout_marginBottom="@dimen/margin_vertical"
-            android:text="Steps:" />
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/steps"
+            android:textSize="@dimen/secondary_title_size" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_steps"
-            android:layout_below="@id/tv_steps_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_steps_text" />
     </RelativeLayout>
 
 </ScrollView>

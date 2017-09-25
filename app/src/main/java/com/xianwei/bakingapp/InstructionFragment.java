@@ -30,6 +30,7 @@ public class InstructionFragment extends Fragment {
     @BindView(R.id.rv_steps)
     RecyclerView stepsRv;
 
+    private static final String RECIPE = "recipe";
     private Recipe recipe;
 
     @Override
@@ -49,7 +50,7 @@ public class InstructionFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            recipe = savedInstanceState.getParcelable("recipe");
+            recipe = savedInstanceState.getParcelable(RECIPE);
             setupIngredient(recipe.getIngredients());
             setupStep(recipe.getSteps());
         }
@@ -74,6 +75,6 @@ public class InstructionFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("recipe", recipe);
+        outState.putParcelable(RECIPE, recipe);
     }
 }

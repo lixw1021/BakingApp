@@ -2,7 +2,6 @@ package com.xianwei.bakingapp.loaders;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
 
 import com.xianwei.bakingapp.Utils.QueryUtils;
 import com.xianwei.bakingapp.model.Recipe;
@@ -31,7 +30,6 @@ public class RecipeLoader extends AsyncTaskLoader<List<Recipe>> {
 
     @Override
     public List<Recipe> loadInBackground() {
-        Log.i("1234", "loadInBackground");
         return QueryUtils.fetchDataFromServer(URL);
     }
 

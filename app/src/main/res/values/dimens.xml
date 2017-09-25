@@ -3,4 +3,12 @@
     <dimen name="line_thickness">1dp</dimen>
     <dimen name="margin_horizontal">10dp</dimen>
     <dimen name="margin_vertical">10dp</dimen>
+    <dimen name="secondary_title_size">20sp</dimen>
+    <dimen name="button_size">40dp</dimen>
+    <dimen name="video_description_text_size">18sp</dimen>
+    <dimen name="item_ingredient_text_size">16sp</dimen>
+    <dimen name="item_step_text_size">20sp</dimen>
+    <dimen name="item_recipe_image_size">50dp</dimen>
+    <dimen name="item_recipe_title_size">25sp</dimen>
+    <dimen name="item_recipe_height">70dp</dimen>
 </resources>

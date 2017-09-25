@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
  */
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
-    List<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
 
     public IngredientAdapter(List<Ingredient> ingredients) {
         this.ingredients = ingredients;

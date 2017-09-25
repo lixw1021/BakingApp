@@ -1,7 +1,6 @@
 package com.xianwei.bakingapp;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -69,7 +68,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     }
-
+    //override Up button, back to instructionFragment when videoFragmented inflated
     private void setUpButton() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +82,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
-
+    // back to previous fragment when more than one video fragment inflated
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {

@@ -57,8 +57,8 @@ public class VideoFragment extends Fragment {
     private static final String SAVED_STEPS = "steps";
     private static final String SAVED_STEP_ID = "stepId";
 
-    SimpleExoPlayer player;
-    long videoPosition = 0;
+    private SimpleExoPlayer player;
+    private long videoPosition = 0;
     private ArrayList<Step> steps;
     private Step step;
     private int stepId;
@@ -159,7 +159,7 @@ public class VideoFragment extends Fragment {
             player.release();
         }
     }
-
+    //  back to next step
     @OnClick(R.id.btn_step_previous)
     void previousStep() {
         if (stepId > 0) {
@@ -177,7 +177,7 @@ public class VideoFragment extends Fragment {
             Toast.makeText(getContext(), R.string.first_step_toasst, Toast.LENGTH_LONG).show();
         }
     }
-
+    // move to next step
     @OnClick(R.id.btn_step_next)
     void nextStep() {
         if (stepId < steps.size() - 1) {

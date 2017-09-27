@@ -1,7 +1,10 @@
 package com.xianwei.bakingapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +12,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xianwei.bakingapp.adapters.RecipeAdapter;
 import com.xianwei.bakingapp.loaders.RecipeLoader;
 import com.xianwei.bakingapp.model.Recipe;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,6 +63,29 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
         mRecipeAdapter.setRecipes(data);
+        cleanSharedPreferences();
+        saveDataToSharedPreference(data);
+    }
+
+    private void cleanSharedPreferences() {
+        SharedPreferences prefs = getSharedPreferences("recipesPref",MODE_PRIVATE);
+        if (prefs != null) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear().commit();
+            Log.i("1234", "preferencesCleaned");
+        }
+    }
+
+    private void saveDataToSharedPreference(List<Recipe> data) {
+        Log.i("1234", "recipes saved");
+        SharedPreferences prefs = getSharedPreferences("recipesPref",MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String serializedRecipes = gson.toJson(data);
+        editor.putString("recipes", serializedRecipes);
+        editor.putInt("recipeId", 0);
+        editor.putInt("recipesSize", data.size());
+        editor.apply();
     }
 
     @Override

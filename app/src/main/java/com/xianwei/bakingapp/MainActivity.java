@@ -1,10 +1,8 @@
 package com.xianwei.bakingapp;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -12,15 +10,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xianwei.bakingapp.adapters.RecipeAdapter;
 import com.xianwei.bakingapp.loaders.RecipeLoader;
 import com.xianwei.bakingapp.model.Recipe;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,6 +29,10 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.rv_recipe)
     RecyclerView recipesRecyclerView;
 
+    private static final String SHARED_PREFERENCE_NAME = "recipesPref";
+    private static final String RECIPES_PREFERENCE_KEY = "recipes";
+    private static final String RECIPE_ID_PREFERENCE_KEY = "recipeId";
+    private static final String RECIPE_SIZE_PREFERENCE_KEY = "recipeSize";
     private static final int GRID_LAYOUT_ITEM_NUM = 2;
 
     private RecipeAdapter mRecipeAdapter;
@@ -63,26 +62,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
         mRecipeAdapter.setRecipes(data);
-//        cleanSharedPreferences();
         saveDataToSharedPreference(data);
     }
 
-    private void cleanSharedPreferences() {
-        SharedPreferences prefs = getSharedPreferences("recipesPref",MODE_PRIVATE);
-        if (prefs != null) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.clear().commit();
-        }
-    }
-
+    // save data in sharedPreference and use in widget
     private void saveDataToSharedPreference(List<Recipe> data) {
-        SharedPreferences prefs = getSharedPreferences("recipesPref",MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         Gson gson = new Gson();
         String serializedRecipes = gson.toJson(data);
-        editor.putString("recipes", serializedRecipes);
-        editor.putInt("recipeId", 0);
-        editor.putInt("recipesSize", data.size());
+        editor.putString(RECIPES_PREFERENCE_KEY, serializedRecipes);
+        editor.putInt(RECIPE_ID_PREFERENCE_KEY, 0);
+        editor.putInt(RECIPE_SIZE_PREFERENCE_KEY, data.size());
         editor.apply();
     }
 

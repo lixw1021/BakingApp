@@ -7,8 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -25,7 +23,13 @@ import static android.content.Context.MODE_PRIVATE;
  * Implementation of App Widget functionality.
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
+    private static final String SHARED_PREFERENCE_NAME = "recipesPref";
+    private static final String RECIPES_PREFERENCE_KEY = "recipes";
+    private static final String RECIPE_ID_PREFERENCE_KEY = "recipeId";
+    private static final String RECIPE_SIZE_PREFERENCE_KEY = "recipeSize";
+    private static final String WIDGET_UPDATE_ACTION = "android.appwidget.action.APPWIDGET_UPDATE";
 
+    //receive broadcast to update recipe
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
@@ -37,17 +41,17 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     }
 
     private void updateRecipeId(Context context) {
-        SharedPreferences SharedPrefs = context.getSharedPreferences("recipesPref", MODE_PRIVATE);
+        SharedPreferences SharedPrefs = context.getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = SharedPrefs.edit();
-        int recipeId = SharedPrefs.getInt("recipeId", 0);
-        int recipesSize = SharedPrefs.getInt("recipesSize", 1);
+        int recipeId = SharedPrefs.getInt(RECIPE_ID_PREFERENCE_KEY, 0);
+        int recipesSize = SharedPrefs.getInt(RECIPE_SIZE_PREFERENCE_KEY, 1);
 
         if (recipeId < recipesSize - 1) {
             recipeId++;
         } else {
             recipeId = 0;
         }
-        editor.putInt("recipeId", recipeId);
+        editor.putInt(RECIPE_ID_PREFERENCE_KEY, recipeId);
         editor.apply();
     }
 
@@ -59,7 +63,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         }
     }
 
-
     public void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -70,11 +73,9 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, RecipeWidgetRemoteViewsService.class);
         views.setRemoteAdapter(R.id.widget_list, intent);
 
-        intent.putExtra("Random", Math.random() * 1000);// Add a random integer to stop the Intent being ignored.  This is needed for some API levels due to intent caching
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-
+        // broadcast to update widget
         Intent updateRecipeIntent = new Intent();
-        updateRecipeIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        updateRecipeIntent.setAction(WIDGET_UPDATE_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                                                                 context,
                                                                 0,
@@ -88,10 +89,10 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     }
 
     public String getIngredientsTitle(Context context) {
-        SharedPreferences SharedPrefs = context.getSharedPreferences("recipesPref", MODE_PRIVATE);
-        int recipeId = SharedPrefs.getInt("recipeId", 0);
+        SharedPreferences SharedPrefs = context.getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        int recipeId = SharedPrefs.getInt(RECIPE_ID_PREFERENCE_KEY, 0);
 
-        String jsonString = SharedPrefs.getString("recipes", null);
+        String jsonString = SharedPrefs.getString(RECIPES_PREFERENCE_KEY, null);
         Type type = new TypeToken<List<Recipe>>() {}.getType();
         Gson gson = new Gson();
         List<Recipe> recipes = gson.fromJson(jsonString , type);

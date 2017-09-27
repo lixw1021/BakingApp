@@ -2,8 +2,6 @@ package com.xianwei.bakingapp.widget;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.Preference;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -22,7 +20,11 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by xianwei li on 9/26/2017.
  */
 
+/*create a list of ingredient in widget*/
 public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+    private static final String SHARED_PREFERENCE_NAME = "recipesPref";
+    private static final String RECIPES_PREFERENCE_KEY = "recipes";
+    private static final String RECIPE_ID_PREFERENCE_KEY = "recipeId";
 
     private Context context;
     private List<Ingredient> ingredients;
@@ -42,13 +44,14 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
     }
 
     public List<Ingredient> getIngredientsFromPreferences(Context context) {
-        SharedPreferences SharedPrefs = context.getSharedPreferences("recipesPref", MODE_PRIVATE);
-        int recipeId = SharedPrefs.getInt("recipeId", 0);
+        SharedPreferences SharedPrefs = context.getSharedPreferences(SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        int recipeId = SharedPrefs.getInt(RECIPE_ID_PREFERENCE_KEY, 0);
 
-        String jsonString = SharedPrefs.getString("recipes", null);
-        Type type = new TypeToken<List<Recipe>>() {}.getType();
+        String jsonString = SharedPrefs.getString(RECIPES_PREFERENCE_KEY, null);
+        Type type = new TypeToken<List<Recipe>>() {
+        }.getType();
         Gson gson = new Gson();
-        List<Recipe> recipes = gson.fromJson(jsonString , type);
+        List<Recipe> recipes = gson.fromJson(jsonString, type);
 
         return recipes.get(recipeId).getIngredients();
     }
@@ -73,8 +76,6 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         ingredientItemView.setTextViewText(R.id.tv_ingredient_quantity, item.getQuantity());
         ingredientItemView.setTextViewText(R.id.tv_ingredient_unit, item.getMeasure());
         ingredientItemView.setTextViewText(R.id.tv_ingredient_description, item.getIngredient());
-
-        Log.i("position" + position + ": ", item.getQuantity() + item.getMeasure() + item.getIngredient());
 
         return ingredientItemView;
     }

@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
         mRecipeAdapter.setRecipes(data);
-        cleanSharedPreferences();
+//        cleanSharedPreferences();
         saveDataToSharedPreference(data);
     }
 
@@ -72,12 +72,10 @@ public class MainActivity extends AppCompatActivity
         if (prefs != null) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear().commit();
-            Log.i("1234", "preferencesCleaned");
         }
     }
 
     private void saveDataToSharedPreference(List<Recipe> data) {
-        Log.i("1234", "recipes saved");
         SharedPreferences prefs = getSharedPreferences("recipesPref",MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         Gson gson = new Gson();

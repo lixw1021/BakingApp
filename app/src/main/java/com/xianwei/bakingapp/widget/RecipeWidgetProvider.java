@@ -3,9 +3,12 @@ package com.xianwei.bakingapp.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
@@ -26,6 +29,26 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
+        ComponentName thisWidget = new ComponentName(context.getApplicationContext(), RecipeWidgetProvider.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        updateRecipeId(context);
+        onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+    private void updateRecipeId(Context context) {
+        SharedPreferences SharedPrefs = context.getSharedPreferences("recipesPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = SharedPrefs.edit();
+        int recipeId = SharedPrefs.getInt("recipeId", 0);
+        int recipesSize = SharedPrefs.getInt("recipesSize", 1);
+
+        if (recipeId < recipesSize - 1) {
+            recipeId++;
+        } else {
+            recipeId = 0;
+        }
+        editor.putInt("recipeId", recipeId);
+        editor.apply();
     }
 
     @Override
@@ -41,16 +64,18 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
                                 int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-
         String title = getIngredientsTitle(context);
         views.setTextViewText(R.id.widget_title, title);
 
         Intent intent = new Intent(context, RecipeWidgetRemoteViewsService.class);
         views.setRemoteAdapter(R.id.widget_list, intent);
 
-        Intent updateRecipeIntent = new Intent(context, RecipeUpdateService.class);
-        updateRecipeIntent.setAction(RecipeUpdateService.ACTION_UPDATE_RECIPE);
-        PendingIntent pendingIntent = PendingIntent.getService(
+        intent.putExtra("Random", Math.random() * 1000);// Add a random integer to stop the Intent being ignored.  This is needed for some API levels due to intent caching
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
+        Intent updateRecipeIntent = new Intent();
+        updateRecipeIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
                                                                 context,
                                                                 0,
                                                                 updateRecipeIntent,

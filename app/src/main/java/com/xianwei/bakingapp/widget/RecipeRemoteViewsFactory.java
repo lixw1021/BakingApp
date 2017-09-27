@@ -26,7 +26,6 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     private Context context;
     private List<Ingredient> ingredients;
-    private int RecipeIndex = 0;
 
     public RecipeRemoteViewsFactory(Context context) {
         this.context = context;
@@ -75,7 +74,7 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         ingredientItemView.setTextViewText(R.id.tv_ingredient_unit, item.getMeasure());
         ingredientItemView.setTextViewText(R.id.tv_ingredient_description, item.getIngredient());
 
-        Log.i("12345item", item.getQuantity() + item.getMeasure() + item.getIngredient());
+        Log.i("position" + position + ": ", item.getQuantity() + item.getMeasure() + item.getIngredient());
 
         return ingredientItemView;
     }
@@ -92,7 +91,7 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override

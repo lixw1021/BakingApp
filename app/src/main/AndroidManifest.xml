@@ -29,6 +29,7 @@
         <receiver android:name=".widget.RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <meta-data
@@ -39,7 +40,6 @@
         <service android:name=".widget.RecipeWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
-        <service android:name=".widget.RecipeUpdateService"/>
     </application>
 
 </manifest>

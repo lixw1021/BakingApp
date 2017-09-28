@@ -191,8 +191,8 @@ public class VideoFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         if (player != null) {
             player.release();
             player = null;

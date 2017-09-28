@@ -2,7 +2,10 @@ package com.xianwei.bakingapp;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +13,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.xianwei.bakingapp.adapters.RecipeAdapter;
@@ -24,6 +28,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<List<Recipe>> {
 
+    @BindView(R.id.layout_main)
+    LinearLayout linearLayout;
     @BindView(R.id.main_toolbar)
     Toolbar toolbar;
     @BindView(R.id.rv_recipe)
@@ -44,7 +50,11 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        if (isConnected()) {
+            getSupportLoaderManager().initLoader(0, null, this);
+        } else {
+            showSnackbar("Please check your internet");
+        }
         mRecipeAdapter = new RecipeAdapter(this);
         recipesRecyclerView.setAdapter(mRecipeAdapter);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -61,8 +71,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
-        mRecipeAdapter.setRecipes(data);
-        saveDataToSharedPreference(data);
+        if (data != null) {
+            mRecipeAdapter.setRecipes(data);
+            saveDataToSharedPreference(data);
+        } else {
+            showSnackbar("Does't get any data from server");
+        }
     }
 
     // save data in sharedPreference and use in widget
@@ -80,5 +94,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<List<Recipe>> loader) {
         mRecipeAdapter.setRecipes(null);
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    public void showSnackbar(String message) {
+        Snackbar.make(linearLayout, message, Snackbar.LENGTH_LONG).show();
     }
 }

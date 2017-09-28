@@ -10,6 +10,13 @@
         android:layout_height="wrap_content"
         app:resize_mode="fit" />
 
+    <ImageView
+        android:id="@+id/iv_step_thumbnail"
+        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/tv_video_description"
         android:layout_width="match_parent"

@@ -3,12 +3,16 @@ package com.xianwei.bakingapp;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +33,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.xianwei.bakingapp.model.Step;
 
 import java.util.ArrayList;
@@ -53,6 +58,8 @@ public class VideoFragment extends Fragment {
     ImageButton previousStep;
     @BindView(R.id.step_btn_layout)
     LinearLayout buttonLayout;
+    @BindView(R.id.iv_step_thumbnail)
+    ImageView stepImage;
 
     private static final String VIDEO_POSITION = "videoPosition";
     private static final String SAVED_STEPS = "steps";
@@ -88,6 +95,10 @@ public class VideoFragment extends Fragment {
             setupExoPlayer(Uri.parse(step.getVideoURL()));
         } else {
             playerView.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(step.getThumbnailURL())) {
+                stepImage.setVisibility(View.VISIBLE);
+                setupStepImage(step.getThumbnailURL());
+            }
         }
 
         videoDescription.setText(step.getDescription());
@@ -123,6 +134,16 @@ public class VideoFragment extends Fragment {
         }
     }
 
+    private void setupStepImage(String thumbnailURL) {
+        if ( ! TextUtils.isEmpty(thumbnailURL)) {
+            Picasso.with(getContext())
+                    .load(thumbnailURL)
+                    .placeholder(R.drawable.ic_image)
+                    .error(R.drawable.ic_broken_image)
+                    .into(stepImage);
+        }
+    }
+
     // make full screen when phone rotate to landscape
     private void setupPlayerView(int orientation) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -154,12 +175,30 @@ public class VideoFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (player != null) {
+            player.setPlayWhenReady(true);
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if (player != null) {
-            player.release();
+            player.setPlayWhenReady(false);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (player != null) {
+            player.release();
+            player = null;
+        }
+    }
+
     //  back to next step
     @OnClick(R.id.btn_step_previous)
     void previousStep() {

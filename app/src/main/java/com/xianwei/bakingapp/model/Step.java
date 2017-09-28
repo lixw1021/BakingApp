@@ -2,6 +2,7 @@ package com.xianwei.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by xianwei li on 9/20/2017.
@@ -43,7 +44,7 @@ public class Step implements Parcelable {
     }
 
     public Boolean hasVideo() {
-        return videoURL != null && videoURL.length() > 0;
+        return !TextUtils.isEmpty(videoURL);
     }
 
     @Override

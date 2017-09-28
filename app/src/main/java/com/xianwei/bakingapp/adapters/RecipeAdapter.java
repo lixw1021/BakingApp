@@ -3,11 +3,14 @@ package com.xianwei.bakingapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.xianwei.bakingapp.DetailActivity;
 import com.xianwei.bakingapp.R;
 import com.xianwei.bakingapp.model.Recipe;
@@ -44,6 +47,13 @@ public class RecipeAdapter extends RecyclerView.Adapter <RecipeAdapter.ViewHolde
         holder.name.setText(currentRecipe.getName());
         holder.servingNum.setText(currentRecipe.getServingNum());
         holder.recipe = currentRecipe;
+        if (!TextUtils.isEmpty(currentRecipe.getImageUrl())){
+            Picasso.with(context)
+                    .load(currentRecipe.getImageUrl())
+                    .placeholder(R.drawable.ic_cupcake)
+                    .error(R.drawable.ic_cupcake)
+                    .into(holder.imageView);
+        }
     }
 
     @Override
@@ -53,6 +63,8 @@ public class RecipeAdapter extends RecyclerView.Adapter <RecipeAdapter.ViewHolde
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.iv_recipe_cover)
+        ImageView imageView;
         @BindView(R.id.tv_food_name)
         TextView name;
         @BindView(R.id.tv_servings_number)

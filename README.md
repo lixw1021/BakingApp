@@ -1,6 +1,6 @@
 # BakingApp
 ```
-Key words: Responsive UI, Exoplayer, Service, Gson, Json, widget, Espresso, 
+Key words: Responsive UI, Exoplayer, Service, Gson, Json, widget, Espresso
 ```
 
 * Developed a recipe app to provide ingredients and steps

@@ -8,7 +8,7 @@ Key words: Responsive UI, Exoplayer, Service, Gson, Json, widget, Espresso
 * Implemented Exoplayer to play step videos
 * Implemented data persistence by saving Json string into sharedPreferences
 * Built a dynamic widget using RemoteViewsService to display recipes
-* Applied Espresso to test different apsects of the UI 
+* Applied Espresso to test different aspects of the UI 
 
 
 <img src="https://user-images.githubusercontent.com/24383706/31956599-e37e8634-b8b9-11e7-902c-a203b3d4db65.png" width="300">         <img src="https://user-images.githubusercontent.com/24383706/31956601-e5c82bde-b8b9-11e7-92a1-2cfa1cacca8d.png" width="300">
